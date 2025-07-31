@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      trip_requests: {
+        Row: {
+          created_at: string
+          from_date: string
+          id: string
+          place_name: string
+          results: Json | null
+          status: string
+          to_date: string
+        }
+        Insert: {
+          created_at?: string
+          from_date: string
+          id?: string
+          place_name: string
+          results?: Json | null
+          status?: string
+          to_date: string
+        }
+        Update: {
+          created_at?: string
+          from_date?: string
+          id?: string
+          place_name?: string
+          results?: Json | null
+          status?: string
+          to_date?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
