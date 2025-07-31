@@ -127,30 +127,25 @@ export function DestinationPlanner() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
-      <div className="max-w-4xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4 pt-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Destination Planner
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Discover amazing places for your next adventure
-          </p>
-        </div>
-
-        {/* Search Form */}
-        <Card className="shadow-lg border-0 bg-card/80 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MapPinIcon className="h-5 w-5" />
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <div className="flex h-screen">
+        {/* Left Side - Search Form */}
+        <div className="w-1/3 p-6 bg-card shadow-lg overflow-y-auto border-r">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+              🌍 AI Trip Planner
+            </h1>
+            <h2 className="text-xl font-semibold text-foreground mb-1">
               Plan Your Trip
-            </CardTitle>
-            <CardDescription>
+            </h2>
+            <p className="text-sm text-muted-foreground">
               Enter your destination and travel dates to get personalized recommendations
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
+            </p>
+          </div>
+
+          {/* Search Form */}
+          <div className="space-y-6">
             <div className="space-y-2">
               <label className="text-sm font-medium">Destination</label>
               <Input
@@ -161,7 +156,7 @@ export function DestinationPlanner() {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">From Date</label>
                 <Popover>
@@ -221,11 +216,11 @@ export function DestinationPlanner() {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="space-y-3">
               <Button 
                 onClick={handleSearch} 
                 disabled={isSearching}
-                className="flex-1"
+                className="w-full"
               >
                 {isSearching ? (
                   <>
@@ -240,93 +235,107 @@ export function DestinationPlanner() {
                 )}
               </Button>
               {currentRequest && (
-                <Button variant="outline" onClick={resetSearch}>
+                <Button variant="outline" onClick={resetSearch} className="w-full">
                   New Search
                 </Button>
               )}
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Search Status */}
-        {isSearching && (
-          <Card className="border-primary/20 bg-primary/5">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <LoaderIcon className="h-5 w-5 animate-spin text-primary" />
-                <div>
-                  <p className="font-medium">Searching for best places...</p>
-                  <p className="text-sm text-muted-foreground">
-                    We're analyzing your destination to find the most amazing spots
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Results */}
-        {currentRequest?.status === 'completed' && Array.isArray(currentRequest.results) && currentRequest.results.length > 0 && (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold">
-                Recommended Places for {currentRequest.place_name}
-              </h2>
-              <p className="text-muted-foreground">
-                {format(new Date(currentRequest.from_date), "MMM d")} - {format(new Date(currentRequest.to_date), "MMM d, yyyy")}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(currentRequest.results as Place[]).map((place, index) => (
-                <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="aspect-video bg-muted flex items-center justify-center">
-                    {place.image_url ? (
-                      <img 
-                        src={place.image_url} 
-                        alt={place.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = '/placeholder.svg';
-                        }}
-                      />
-                    ) : (
-                      <div className="text-center text-muted-foreground">
-                        <MapPinIcon className="h-12 w-12 mx-auto mb-2" />
-                        <p className="text-sm">Image not available</p>
-                      </div>
-                    )}
-                  </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold text-lg mb-2">{place.name}</h3>
-                    <p className="text-sm text-muted-foreground mb-3">{place.distance}</p>
-                    <p className="text-sm mb-4">{place.description}</p>
-                    <div className="flex flex-wrap gap-1">
-                      {place.keywords.slice(0, 4).map((keyword, i) => (
-                        <Badge key={i} variant="secondary" className="text-xs">
-                          {keyword}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
           </div>
-        )}
+        </div>
 
-        {/* No Results */}
-        {currentRequest?.status === 'completed' && (!Array.isArray(currentRequest.results) || currentRequest.results.length === 0) && (
-          <Card className="text-center py-12">
-            <CardContent>
-              <MapPinIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">No places found</h3>
-              <p className="text-muted-foreground">
-                We couldn't find any recommendations for this destination. Try searching for a different location.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+        {/* Right Side - Results */}
+        <div className="flex-1 p-6 overflow-y-auto">
+          {/* Search Status */}
+          {isSearching && (
+            <Card className="border-primary/20 bg-primary/5 mb-6">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3">
+                  <LoaderIcon className="h-5 w-5 animate-spin text-primary" />
+                  <div>
+                    <p className="font-medium">Searching for best places...</p>
+                    <p className="text-sm text-muted-foreground">
+                      We're analyzing your destination to find the most amazing spots
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Results */}
+          {currentRequest?.status === 'completed' && Array.isArray(currentRequest.results) && currentRequest.results.length > 0 && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold">
+                  Recommended Places for {currentRequest.place_name}
+                </h2>
+                <p className="text-muted-foreground">
+                  {format(new Date(currentRequest.from_date), "MMM d")} - {format(new Date(currentRequest.to_date), "MMM d, yyyy")}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {(currentRequest.results as Place[]).map((place, index) => (
+                  <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <div className="aspect-video bg-muted flex items-center justify-center">
+                      {place.image_url ? (
+                        <img 
+                          src={place.image_url} 
+                          alt={place.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = '/placeholder.svg';
+                          }}
+                        />
+                      ) : (
+                        <div className="text-center text-muted-foreground">
+                          <MapPinIcon className="h-12 w-12 mx-auto mb-2" />
+                          <p className="text-sm">Image not available</p>
+                        </div>
+                      )}
+                    </div>
+                    <CardContent className="p-4">
+                      <h3 className="font-semibold text-lg mb-2">{place.name}</h3>
+                      <p className="text-sm text-muted-foreground mb-3">{place.distance}</p>
+                      <p className="text-sm mb-4">{place.description}</p>
+                      <div className="flex flex-wrap gap-1">
+                        {place.keywords.slice(0, 4).map((keyword, i) => (
+                          <Badge key={i} variant="secondary" className="text-xs">
+                            {keyword}
+                          </Badge>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* No Results */}
+          {currentRequest?.status === 'completed' && (!Array.isArray(currentRequest.results) || currentRequest.results.length === 0) && (
+            <Card className="text-center py-12">
+              <CardContent>
+                <MapPinIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No places found</h3>
+                <p className="text-muted-foreground">
+                  We couldn't find any recommendations for this destination. Try searching for a different location.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Default State */}
+          {!currentRequest && !isSearching && (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center text-muted-foreground">
+                <div className="text-6xl mb-4">🌍</div>
+                <h3 className="text-xl font-semibold mb-2">Ready to explore?</h3>
+                <p>Enter your destination and dates to get started</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
