@@ -11,12 +11,14 @@ import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-interface Place {
-  name: string;
+interface Activity {
+  title: string;
   description: string;
-  image_url: string;
-  distance: string;
-  keywords: string[];
+}
+
+interface DayPlan {
+  day: string;
+  activities: Activity[];
 }
 
 interface TripRequest {
@@ -275,43 +277,23 @@ export function DestinationPlanner() {
               </div>
 
               {(() => {
-                const fromDate = new Date(currentRequest.from_date);
-                const toDate = new Date(currentRequest.to_date);
-                const diffTime = Math.abs(toDate.getTime() - fromDate.getTime());
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-                const places = currentRequest.results as Place[];
-                const placesPerDay = Math.ceil(places.length / diffDays);
-
-                return Array.from({ length: diffDays }, (_, dayIndex) => {
-                  const startIndex = dayIndex * placesPerDay;
-                  const endIndex = Math.min(startIndex + placesPerDay, places.length);
-                  const dayPlaces = places.slice(startIndex, endIndex);
-
-                  if (dayPlaces.length === 0) return null;
-
-                  return (
-                    <div key={dayIndex} className="space-y-4">
-                      <h3 className="text-xl font-semibold text-primary">Day {dayIndex + 1}:</h3>
-                      <div className="space-y-4">
-                        {dayPlaces.map((place, index) => (
-                          <Card key={startIndex + index} className="w-full">
-                            <CardContent className="p-4">
-                              <h3 className="font-semibold text-lg mb-2">{place.name}</h3>
-                              <p className="text-sm mb-4">{place.description}</p>
-                              <div className="flex flex-wrap gap-1">
-                                {place.keywords.slice(0, 4).map((keyword, i) => (
-                                  <Badge key={i} variant="secondary" className="text-xs">
-                                    {keyword}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
+                const dayPlans = currentRequest.results as DayPlan[];
+                
+                return dayPlans.map((dayPlan, dayIndex) => (
+                  <div key={dayIndex} className="space-y-4">
+                    <h3 className="text-xl font-semibold text-primary">{dayPlan.day}</h3>
+                    <div className="space-y-4">
+                      {dayPlan.activities.map((activity, activityIndex) => (
+                        <Card key={activityIndex} className="w-full">
+                          <CardContent className="p-4">
+                            <h3 className="font-semibold text-lg mb-2">{activity.title}</h3>
+                            <p className="text-sm">{activity.description}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
                     </div>
-                  );
-                }).filter(Boolean);
+                  </div>
+                ));
               })()}
             </div>
           )}
