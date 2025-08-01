@@ -134,7 +134,7 @@ export function DestinationPlanner() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
-              🌍 AI Trip Planner
+              Destination Planner by FairyFrills
             </h1>
             <h2 className="text-xl font-semibold text-foreground mb-1">
               Plan Your Trip
@@ -274,41 +274,63 @@ export function DestinationPlanner() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {(currentRequest.results as Place[]).map((place, index) => (
-                  <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className="aspect-video bg-muted flex items-center justify-center">
-                      {place.image_url ? (
-                        <img 
-                          src={place.image_url} 
-                          alt={place.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src = '/placeholder.svg';
-                          }}
-                        />
-                      ) : (
-                        <div className="text-center text-muted-foreground">
-                          <MapPinIcon className="h-12 w-12 mx-auto mb-2" />
-                          <p className="text-sm">Image not available</p>
-                        </div>
-                      )}
-                    </div>
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold text-lg mb-2">{place.name}</h3>
-                      <p className="text-sm text-muted-foreground mb-3">{place.distance}</p>
-                      <p className="text-sm mb-4">{place.description}</p>
-                      <div className="flex flex-wrap gap-1">
-                        {place.keywords.slice(0, 4).map((keyword, i) => (
-                          <Badge key={i} variant="secondary" className="text-xs">
-                            {keyword}
-                          </Badge>
+              {(() => {
+                const fromDate = new Date(currentRequest.from_date);
+                const toDate = new Date(currentRequest.to_date);
+                const diffTime = Math.abs(toDate.getTime() - fromDate.getTime());
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                const places = currentRequest.results as Place[];
+                const placesPerDay = Math.ceil(places.length / diffDays);
+
+                return Array.from({ length: diffDays }, (_, dayIndex) => {
+                  const startIndex = dayIndex * placesPerDay;
+                  const endIndex = Math.min(startIndex + placesPerDay, places.length);
+                  const dayPlaces = places.slice(startIndex, endIndex);
+
+                  if (dayPlaces.length === 0) return null;
+
+                  return (
+                    <div key={dayIndex} className="space-y-4">
+                      <h3 className="text-xl font-semibold text-primary">Day {dayIndex + 1}:</h3>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {dayPlaces.map((place, index) => (
+                          <Card key={startIndex + index} className="overflow-hidden hover:shadow-lg transition-shadow">
+                            <div className="aspect-video bg-muted flex items-center justify-center">
+                              {place.image_url ? (
+                                <img 
+                                  src={place.image_url} 
+                                  alt={place.name}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    e.currentTarget.src = '/placeholder.svg';
+                                  }}
+                                />
+                              ) : (
+                                <div className="text-center text-muted-foreground">
+                                  <MapPinIcon className="h-12 w-12 mx-auto mb-2" />
+                                  <p className="text-sm">Image not available</p>
+                                </div>
+                              )}
+                            </div>
+                            <CardContent className="p-4">
+                              <h3 className="font-semibold text-lg mb-2">{place.name}</h3>
+                              <p className="text-sm text-muted-foreground mb-3">{place.distance}</p>
+                              <p className="text-sm mb-4">{place.description}</p>
+                              <div className="flex flex-wrap gap-1">
+                                {place.keywords.slice(0, 4).map((keyword, i) => (
+                                  <Badge key={i} variant="secondary" className="text-xs">
+                                    {keyword}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </CardContent>
+                          </Card>
                         ))}
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                    </div>
+                  );
+                }).filter(Boolean);
+              })()}
             </div>
           )}
 
