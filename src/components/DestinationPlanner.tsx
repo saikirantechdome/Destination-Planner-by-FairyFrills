@@ -292,29 +292,11 @@ export function DestinationPlanner() {
                   return (
                     <div key={dayIndex} className="space-y-4">
                       <h3 className="text-xl font-semibold text-primary">Day {dayIndex + 1}:</h3>
-                      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      <div className="space-y-4">
                         {dayPlaces.map((place, index) => (
-                          <Card key={startIndex + index} className="overflow-hidden hover:shadow-lg transition-shadow">
-                            <div className="aspect-video bg-muted flex items-center justify-center">
-                              {place.image_url ? (
-                                <img 
-                                  src={place.image_url} 
-                                  alt={place.name}
-                                  className="w-full h-full object-cover"
-                                  onError={(e) => {
-                                    e.currentTarget.src = '/placeholder.svg';
-                                  }}
-                                />
-                              ) : (
-                                <div className="text-center text-muted-foreground">
-                                  <MapPinIcon className="h-12 w-12 mx-auto mb-2" />
-                                  <p className="text-sm">Image not available</p>
-                                </div>
-                              )}
-                            </div>
+                          <Card key={startIndex + index} className="w-full">
                             <CardContent className="p-4">
                               <h3 className="font-semibold text-lg mb-2">{place.name}</h3>
-                              <p className="text-sm text-muted-foreground mb-3">{place.distance}</p>
                               <p className="text-sm mb-4">{place.description}</p>
                               <div className="flex flex-wrap gap-1">
                                 {place.keywords.slice(0, 4).map((keyword, i) => (
