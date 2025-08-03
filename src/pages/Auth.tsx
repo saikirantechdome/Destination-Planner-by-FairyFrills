@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,8 +18,16 @@ const Auth = () => {
     phoneNumber: ''
   });
 
-  const { signUp, signIn } = useAuth();
+  const { signUp, signIn, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // Redirect to main page if user is already authenticated
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate('/');
+    }
+  }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +62,12 @@ const Auth = () => {
             title: "Sign in failed",
             description: error.message,
             variant: "destructive"
+          });
+        } else {
+          // Successful login - redirect will happen via useEffect
+          toast({
+            title: "Welcome back!",
+            description: "You have been successfully signed in."
           });
         }
       }
