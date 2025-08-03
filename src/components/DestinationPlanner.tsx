@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Activity {
   title: string;
@@ -32,6 +33,7 @@ interface TripRequest {
 }
 
 export function DestinationPlanner() {
+  const { user } = useAuth();
   const [placeName, setPlaceName] = useState('');
   const [fromDate, setFromDate] = useState<Date>();
   const [toDate, setToDate] = useState<Date>();
@@ -71,7 +73,7 @@ export function DestinationPlanner() {
   }, [currentRequest, toast]);
 
   const handleSearch = async () => {
-    if (!placeName || !fromDate || !toDate) {
+    if (!placeName || !fromDate || !toDate || !user) {
       toast({
         title: "Missing Information",
         description: "Please fill in all fields before searching.",
@@ -97,7 +99,8 @@ export function DestinationPlanner() {
         place_name: placeName,
         from_date: format(fromDate, 'yyyy-MM-dd'),
         to_date: format(toDate, 'yyyy-MM-dd'),
-        status: 'pending'
+        status: 'pending',
+        user_id: user.id
       })
       .select()
       .single();
