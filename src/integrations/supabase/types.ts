@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          phone_number: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          phone_number?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          phone_number?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       trip_requests: {
         Row: {
           created_at: string
@@ -23,6 +53,7 @@ export type Database = {
           results: Json | null
           status: string
           to_date: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -32,6 +63,7 @@ export type Database = {
           results?: Json | null
           status?: string
           to_date: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -41,8 +73,17 @@ export type Database = {
           results?: Json | null
           status?: string
           to_date?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "trip_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
     }
     Views: {
