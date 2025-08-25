@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { TripPlanDetails } from '@/components/TripPlanDetails';
 
 interface Activity {
   title: string;
@@ -32,6 +33,49 @@ interface TripRequest {
   created_at: string;
 }
 
+interface Destination {
+  name: string;
+  image: string;
+  tagline: string;
+}
+
+const trendingDestinations = {
+  'Less than 5 Days': [
+    { name: 'Dubai', image: '/placeholder.svg', tagline: 'Luxury meets tradition' },
+    { name: 'Singapore', image: '/placeholder.svg', tagline: 'Garden city perfection' },
+    { name: 'Bali', image: '/placeholder.svg', tagline: 'Island paradise' },
+    { name: 'Sri Lanka', image: '/placeholder.svg', tagline: 'Pearl of the Indian Ocean' },
+    { name: 'Malaysia', image: '/placeholder.svg', tagline: 'Truly Asia' },
+    { name: 'Vietnam', image: '/placeholder.svg', tagline: 'Breathtaking landscapes' },
+    { name: 'Thailand', image: '/placeholder.svg', tagline: 'Land of smiles' }
+  ],
+  '5–8 Days': [
+    { name: 'Vietnam', image: '/placeholder.svg', tagline: 'Breathtaking landscapes' },
+    { name: 'Thailand', image: '/placeholder.svg', tagline: 'Land of smiles' },
+    { name: 'Mauritius', image: '/placeholder.svg', tagline: 'Tropical paradise' },
+    { name: 'Australia', image: '/placeholder.svg', tagline: 'Down under adventures' }
+  ],
+  '10+ Days': [
+    { name: 'New Zealand', image: '/placeholder.svg', tagline: 'Adventure capital' },
+    { name: 'Europe', image: '/placeholder.svg', tagline: 'Historic wonders' },
+    { name: 'United Kingdom', image: '/placeholder.svg', tagline: 'Royal heritage' },
+    { name: 'Scandinavia', image: '/placeholder.svg', tagline: 'Nordic beauty' }
+  ]
+};
+
+const bestPicks = [
+  { name: 'Mauritius', image: '/placeholder.svg' },
+  { name: 'Malaysia', image: '/placeholder.svg' },
+  { name: 'Sri Lanka', image: '/placeholder.svg' },
+  { name: 'Thailand', image: '/placeholder.svg' },
+  { name: 'Maldives', image: '/placeholder.svg' },
+  { name: 'Australia', image: '/placeholder.svg' },
+  { name: 'France', image: '/placeholder.svg' },
+  { name: 'Norway', image: '/placeholder.svg' },
+  { name: 'Switzerland', image: '/placeholder.svg' },
+  { name: 'Finland', image: '/placeholder.svg' }
+];
+
 export function DestinationPlanner() {
   const { user } = useAuth();
   const [placeName, setPlaceName] = useState('');
@@ -39,6 +83,8 @@ export function DestinationPlanner() {
   const [toDate, setToDate] = useState<Date>();
   const [isSearching, setIsSearching] = useState(false);
   const [currentRequest, setCurrentRequest] = useState<TripRequest | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string>('Less than 5 Days');
+  const [selectedDestination, setSelectedDestination] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Poll for results every 5 seconds when searching
@@ -130,6 +176,23 @@ export function DestinationPlanner() {
     setFromDate(undefined);
     setToDate(undefined);
   };
+
+  const handleDestinationClick = (destinationName: string) => {
+    setSelectedDestination(destinationName);
+  };
+
+  const handleBackToDestinations = () => {
+    setSelectedDestination(null);
+  };
+
+  if (selectedDestination) {
+    return (
+      <TripPlanDetails 
+        destination={selectedDestination} 
+        onBack={handleBackToDestinations} 
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
@@ -314,12 +377,76 @@ export function DestinationPlanner() {
             </Card>
           )}
 
-          {/* Default State */}
+          {/* Default State - Trending Destinations & Best Picks */}
           {!currentRequest && !isSearching && (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center text-muted-foreground">
-                <h3 className="text-xl font-semibold mb-2">Ready to explore?</h3>
-                <p>Enter your destination and dates to get started</p>
+            <div className="space-y-8">
+              {/* Trending Destinations Section */}
+              <div>
+                <h2 className="text-2xl font-bold mb-6">TRENDING DESTINATIONS</h2>
+                
+                {/* Filter Buttons */}
+                <div className="flex flex-wrap gap-3 mb-6">
+                  {Object.keys(trendingDestinations).map((filter) => (
+                    <Button
+                      key={filter}
+                      variant={activeFilter === filter ? "default" : "outline"}
+                      onClick={() => setActiveFilter(filter)}
+                      className="text-sm"
+                    >
+                      {filter}
+                    </Button>
+                  ))}
+                </div>
+
+                {/* Horizontal Scroll Cards */}
+                <div className="overflow-x-auto pb-4">
+                  <div className="flex gap-4 min-w-max">
+                    {trendingDestinations[activeFilter as keyof typeof trendingDestinations].map((destination, index) => (
+                      <Card 
+                        key={index} 
+                        className="w-72 flex-shrink-0 cursor-pointer hover:shadow-lg transition-shadow"
+                        onClick={() => handleDestinationClick(destination.name)}
+                      >
+                        <div className="aspect-video bg-muted rounded-t-lg overflow-hidden">
+                          <img 
+                            src={destination.image} 
+                            alt={destination.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <CardContent className="p-4">
+                          <h3 className="font-semibold text-lg">{destination.name}</h3>
+                          <p className="text-sm text-muted-foreground">{destination.tagline}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Best Picks Section */}
+              <div>
+                <h2 className="text-2xl font-bold mb-6">BEST PICKS</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  {bestPicks.map((destination, index) => (
+                    <Card 
+                      key={index} 
+                      className="cursor-pointer hover:shadow-lg transition-shadow group"
+                      onClick={() => handleDestinationClick(destination.name)}
+                    >
+                      <div className="aspect-square bg-muted rounded-t-lg overflow-hidden">
+                        <img 
+                          src={destination.image} 
+                          alt={destination.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                      </div>
+                      <CardContent className="p-3">
+                        <h3 className="font-medium text-center">{destination.name}</h3>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </div>
           )}
