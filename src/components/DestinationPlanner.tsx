@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { CalendarIcon, MapPinIcon, SearchIcon, LoaderIcon } from 'lucide-react';
+import { CalendarIcon, MapPinIcon, SearchIcon, LoaderIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -41,39 +41,39 @@ interface Destination {
 
 const trendingDestinations = {
   'Less than 5 Days': [
-    { name: 'Dubai', image: '/placeholder.svg', tagline: 'Luxury meets tradition' },
-    { name: 'Singapore', image: '/placeholder.svg', tagline: 'Garden city perfection' },
-    { name: 'Bali', image: '/placeholder.svg', tagline: 'Island paradise' },
-    { name: 'Sri Lanka', image: '/placeholder.svg', tagline: 'Pearl of the Indian Ocean' },
-    { name: 'Malaysia', image: '/placeholder.svg', tagline: 'Truly Asia' },
-    { name: 'Vietnam', image: '/placeholder.svg', tagline: 'Breathtaking landscapes' },
-    { name: 'Thailand', image: '/placeholder.svg', tagline: 'Land of smiles' }
+    { name: 'Dubai', image: 'https://destinationplanner.blob.core.windows.net/tripplan/Dubai_min_37d495697d.png', tagline: 'Luxury meets tradition' },
+    { name: 'Singapore', image: 'https://destinationplanner.blob.core.windows.net/tripplan/New_Zealand_min_bd852c07d1.png', tagline: 'Garden city perfection' },
+    { name: 'Bali', image: 'https://destinationplanner.blob.core.windows.net/tripplan/Bali%201STCARD.png', tagline: 'Island paradise' },
+    { name: 'Sri Lanka', image: 'https://destinationplanner.blob.core.windows.net/tripplan/Srilanka_min_1_1116f72816_3013a482e8.png', tagline: 'Pearl of the Indian Ocean' },
+    { name: 'Malaysia', image: 'https://destinationplanner.blob.core.windows.net/tripplan/Malaysia_min_14ae4e76cc_106f0987d5%20(1).png', tagline: 'Truly Asia' },
+    { name: 'Vietnam', image: 'https://destinationplanner.blob.core.windows.net/tripplan/Vietnam_min_9b4fb245d7.png', tagline: 'Breathtaking landscapes' },
+    { name: 'Thailand', image: 'https://destinationplanner.blob.core.windows.net/tripplan/Thailand_min_5b98b41c89.png', tagline: 'Land of smiles' }
   ],
   '5–8 Days': [
-    { name: 'Vietnam', image: '/placeholder.svg', tagline: 'Breathtaking landscapes' },
-    { name: 'Thailand', image: '/placeholder.svg', tagline: 'Land of smiles' },
-    { name: 'Mauritius', image: '/placeholder.svg', tagline: 'Tropical paradise' },
-    { name: 'Australia', image: '/placeholder.svg', tagline: 'Down under adventures' }
+    { name: 'Vietnam', image: 'https://destinationplanner.blob.core.windows.net/tripplan/Vietnam_min_9b4fb245d7.png', tagline: 'Breathtaking landscapes' },
+    { name: 'Thailand', image: 'https://destinationplanner.blob.core.windows.net/tripplan/Thailand_min_5b98b41c89.png', tagline: 'Land of smiles' },
+    { name: 'Mauritius', image: 'https://destinationplanner.blob.core.windows.net/tripplan/Mauritius_min_68238a83af_0c4b918181.png', tagline: 'Tropical paradise' },
+    { name: 'Australia', image: 'https://destinationplanner.blob.core.windows.net/tripplan/AUSTRAILA%201STCARD.png', tagline: 'Down under adventures' }
   ],
   '10+ Days': [
-    { name: 'New Zealand', image: '/placeholder.svg', tagline: 'Adventure capital' },
-    { name: 'Europe', image: '/placeholder.svg', tagline: 'Historic wonders' },
-    { name: 'United Kingdom', image: '/placeholder.svg', tagline: 'Royal heritage' },
-    { name: 'Scandinavia', image: '/placeholder.svg', tagline: 'Nordic beauty' }
+    { name: 'New Zealand', image: 'https://destinationplanner.blob.core.windows.net/tripplan/New_Zealand_min_bd852c07d1.png', tagline: 'Adventure capital' },
+    { name: 'Europe', image: 'https://destinationplanner.blob.core.windows.net/tripplan/Europe_min_02633788f0.png', tagline: 'Historic wonders' },
+    { name: 'United Kingdom', image: 'https://destinationplanner.blob.core.windows.net/tripplan/united_kingdom_d153b14c67.png', tagline: 'Royal heritage' },
+    { name: 'Scandinavia', image: 'https://destinationplanner.blob.core.windows.net/tripplan/scandinavia_842d6c6455.png', tagline: 'Nordic beauty' }
   ]
 };
 
 const bestPicks = [
-  { name: 'Mauritius', image: '/placeholder.svg' },
-  { name: 'Malaysia', image: '/placeholder.svg' },
-  { name: 'Sri Lanka', image: '/placeholder.svg' },
-  { name: 'Thailand', image: '/placeholder.svg' },
-  { name: 'Maldives', image: '/placeholder.svg' },
-  { name: 'Australia', image: '/placeholder.svg' },
-  { name: 'France', image: '/placeholder.svg' },
-  { name: 'Norway', image: '/placeholder.svg' },
-  { name: 'Switzerland', image: '/placeholder.svg' },
-  { name: 'Finland', image: '/placeholder.svg' }
+  { name: 'Mauritius', image: 'https://destinationplanner.blob.core.windows.net/secondcard/mauritiusSECONDCARD.png' },
+  { name: 'Malaysia', image: 'https://destinationplanner.blob.core.windows.net/secondcard/malaysiaSECONDCARD.png' },
+  { name: 'Sri Lanka', image: 'https://destinationplanner.blob.core.windows.net/secondcard/SRILANKA%20SECONDCRAD.png' },
+  { name: 'Thailand', image: 'https://destinationplanner.blob.core.windows.net/secondcard/THAILALAND%202ND%20CARD.png' },
+  { name: 'Maldives', image: 'https://destinationplanner.blob.core.windows.net/secondcard/seychellesSECOND%20CARD.png' },
+  { name: 'Australia', image: 'https://destinationplanner.blob.core.windows.net/secondcard/Australia%20SECONDCARD.png' },
+  { name: 'France', image: 'https://destinationplanner.blob.core.windows.net/secondcard/franceSECONDCARD.png' },
+  { name: 'Norway', image: 'https://destinationplanner.blob.core.windows.net/secondcard/NORWAYSECONDCARD.png' },
+  { name: 'Switzerland', image: 'https://destinationplanner.blob.core.windows.net/secondcard/SWITHERLAND%20SECONDCARD.png' },
+  { name: 'Finland', image: 'https://destinationplanner.blob.core.windows.net/secondcard/FINLANDSECONDCARD.png' }
 ];
 
 export function DestinationPlanner() {
@@ -85,6 +85,7 @@ export function DestinationPlanner() {
   const [currentRequest, setCurrentRequest] = useState<TripRequest | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>('Less than 5 Days');
   const [selectedDestination, setSelectedDestination] = useState<string | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const { toast } = useToast();
 
   // Poll for results every 5 seconds when searching
@@ -183,6 +184,18 @@ export function DestinationPlanner() {
 
   const handleBackToDestinations = () => {
     setSelectedDestination(null);
+  };
+
+  const cardsPerView = 4;
+  const currentDestinations = trendingDestinations[activeFilter as keyof typeof trendingDestinations];
+  const maxSlides = Math.max(0, currentDestinations.length - cardsPerView);
+
+  const nextSlide = () => {
+    setCurrentSlide(prev => Math.min(prev + 1, maxSlides));
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide(prev => Math.max(prev - 1, 0));
   };
 
   if (selectedDestination) {
@@ -398,28 +411,55 @@ export function DestinationPlanner() {
                   ))}
                 </div>
 
-                {/* Horizontal Scroll Cards */}
-                <div className="overflow-x-auto pb-4">
-                  <div className="flex gap-4 min-w-max">
-                    {trendingDestinations[activeFilter as keyof typeof trendingDestinations].map((destination, index) => (
-                      <Card 
-                        key={index} 
-                        className="w-72 flex-shrink-0 cursor-pointer hover:shadow-lg transition-shadow"
-                        onClick={() => handleDestinationClick(destination.name)}
-                      >
-                        <div className="aspect-video bg-muted rounded-t-lg overflow-hidden">
-                          <img 
-                            src={destination.image} 
-                            alt={destination.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <CardContent className="p-4">
-                          <h3 className="font-semibold text-lg">{destination.name}</h3>
-                          <p className="text-sm text-muted-foreground">{destination.tagline}</p>
-                        </CardContent>
-                      </Card>
-                    ))}
+                {/* Navigation Controls */}
+                <div className="relative">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={prevSlide}
+                      disabled={currentSlide === 0}
+                      className="h-8 w-8"
+                    >
+                      <ChevronLeftIcon className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={nextSlide}
+                      disabled={currentSlide >= maxSlides}
+                      className="h-8 w-8"
+                    >
+                      <ChevronRightIcon className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* Cards Container */}
+                  <div className="overflow-hidden">
+                    <div 
+                      className="flex gap-4 transition-transform duration-300 ease-in-out"
+                      style={{ transform: `translateX(-${currentSlide * (288 + 16)}px)` }}
+                    >
+                      {currentDestinations.map((destination, index) => (
+                        <Card 
+                          key={index} 
+                          className="w-72 flex-shrink-0 cursor-pointer hover:shadow-lg transition-shadow"
+                          onClick={() => handleDestinationClick(destination.name)}
+                        >
+                          <div className="aspect-video bg-muted rounded-t-lg overflow-hidden">
+                            <img 
+                              src={destination.image} 
+                              alt={destination.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <CardContent className="p-4">
+                            <h3 className="font-semibold text-lg">{destination.name}</h3>
+                            <p className="text-sm text-muted-foreground">{destination.tagline}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
