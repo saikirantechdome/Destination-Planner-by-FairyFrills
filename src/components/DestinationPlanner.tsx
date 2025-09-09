@@ -230,7 +230,7 @@ export function DestinationPlanner() {
             <div className="space-y-2">
               <label className="text-sm font-medium">Destination</label>
               <Input
-                placeholder="e.g., Dubai, New York, Hyderabad"
+                placeholder="Eg:- Dubai, New York, Hyderabad"
                 value={placeName}
                 onChange={(e) => setPlaceName(e.target.value)}
                 disabled={isSearching}
