@@ -86,6 +86,7 @@ export function DestinationPlanner() {
   const [activeFilter, setActiveFilter] = useState<string>('Less than 5 Days');
   const [selectedDestination, setSelectedDestination] = useState<string | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isToDatePickerOpen, setIsToDatePickerOpen] = useState(false);
   const { toast } = useToast();
 
   // Poll for results every 5 seconds when searching
@@ -258,7 +259,12 @@ export function DestinationPlanner() {
                     <Calendar
                       mode="single"
                       selected={fromDate}
-                      onSelect={setFromDate}
+                      onSelect={(date) => {
+                        setFromDate(date);
+                        if (date) {
+                          setIsToDatePickerOpen(true);
+                        }
+                      }}
                       disabled={(date) => date < new Date()}
                       initialFocus
                       className="pointer-events-auto"
@@ -269,7 +275,7 @@ export function DestinationPlanner() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">To Date</label>
-                <Popover>
+                <Popover open={isToDatePickerOpen} onOpenChange={setIsToDatePickerOpen}>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
@@ -287,7 +293,12 @@ export function DestinationPlanner() {
                     <Calendar
                       mode="single"
                       selected={toDate}
-                      onSelect={setToDate}
+                      onSelect={(date) => {
+                        setToDate(date);
+                        if (date) {
+                          setIsToDatePickerOpen(false);
+                        }
+                      }}
                       disabled={(date) => date < new Date() || (fromDate && date < fromDate)}
                       initialFocus
                       className="pointer-events-auto"
