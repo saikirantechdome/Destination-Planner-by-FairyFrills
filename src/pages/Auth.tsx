@@ -50,9 +50,11 @@ const Auth = () => {
           });
         } else {
           toast({
-            title: "Success!",
-            description: "Please check your email to confirm your account."
+            title: "Account created successfully!",
+            description: "You can now sign in with your credentials."
           });
+          // Switch to sign in mode after successful signup
+          setIsSignUp(false);
         }
       } else {
         const { error } = await signIn(formData.email, formData.password);
